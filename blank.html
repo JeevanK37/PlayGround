@@ -1,0 +1,2 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#123"><canvas id="c" width="1440" height="900"></canvas><script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');let n=0,t=performance.now();function f(){n++;ctx.fillStyle='#123';ctx.fillRect(0,0,1440,900);ctx.fillStyle='hsl('+(n*3)+',80%,50%)';ctx.fillRect(100,100,400,400);if(performance.now()-t>2000){document.title='FPS '+(n/((performance.now()-t)/1000)).toFixed(1);n=0;t=performance.now()}requestAnimationFrame(f)}requestAnimationFrame(f)</script>

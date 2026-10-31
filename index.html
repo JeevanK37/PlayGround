@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#06121d">
+  <meta name="description" content="Messi: Two-Footed — a twin-stick dribbling game. Control each leg with its own thumbstick and become the GOAT.">
+  <title>Messi: Two-Footed — Twin-Stick Dribbler</title>
+  <link rel="preload" href="assets/fonts/bebas-neue.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+    <canvas id="game" aria-label="Messi: Two-Footed football pitch"></canvas>
+
+    <div class="grain" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <!-- ── In-match HUD ─────────────────────────────────────────── -->
+    <section id="hud" class="hud" aria-hidden="true" hidden>
+      <div class="hud-bar">
+        <div class="hud-brand">
+          <span class="brand-mark">10</span>
+          <span class="brand-copy">MESSI<em>TWO-FOOTED</em></span>
+        </div>
+
+        <div class="hud-stat hud-time" id="timeStat">
+          <span class="hud-label">TIME</span>
+          <strong id="timer">1:15</strong>
+        </div>
+
+        <div class="hud-stat hud-score">
+          <span class="hud-label">SCORE</span>
+          <strong id="score">0000</strong>
+          <span class="hud-goals" id="goals">0 GOALS</span>
+        </div>
+
+        <div class="hud-buttons">
+          <button id="muteBtn" class="icon-btn" type="button" aria-label="Mute sound" title="Mute sound">
+            <svg class="icon-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.2L12 5.7v12.6L7.2 14.5H4z" fill="currentColor"/><path d="M15.2 8.4a5 5 0 0 1 0 7.2M17.8 6a8.2 8.2 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <svg class="icon-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.2L12 5.7v12.6L7.2 14.5H4z" fill="currentColor"/><path d="m15.5 9 4.5 6M20 9l-4.5 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+          <button id="pauseBtn" class="icon-btn" type="button" aria-label="Pause game" title="Pause game">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5.5" width="4" height="13" rx="1.2" fill="currentColor"/><rect x="13.5" y="5.5" width="4" height="13" rx="1.2" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="hud-sub">
+        <span class="live-dot"></span>
+        <span>LA PULGA CAM</span>
+        <span class="hud-divider"></span>
+        <span id="difficulty">2 DEFENDERS</span>
+      </div>
+
+      <div id="combo" class="combo" aria-live="polite"></div>
+      <div id="toast" class="toast" aria-live="polite"></div>
+
+      <div id="goalBanner" class="goal-banner" aria-hidden="true">
+        <span class="goal-kicker">MESSI 10</span>
+        <strong id="goalWord">GOLAZO</strong>
+        <span class="goal-sub" id="goalSub">+6 SECONDS</span>
+      </div>
+
+      <div class="hint-strip" id="hintStrip">
+        <span><b>BOTH STICKS</b> TO RUN</span>
+        <i></i>
+        <span><b>FLICK</b> THROUGH THE BALL TO KICK</span>
+      </div>
+    </section>
+
+    <!-- ── Title screen ─────────────────────────────────────────── -->
+    <section id="titleScreen" class="screen title-screen" aria-labelledby="gameTitle">
+      <div class="title-streaks" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="title-inner">
+        <div class="eyebrow">
+          <span class="flag" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>BUENOS AIRES &nbsp;·&nbsp; NO. 10</span>
+        </div>
+
+        <h1 id="gameTitle">
+          <span class="title-name">MESSI</span>
+          <span class="title-mode">TWO<span>·</span>FOOTED</span>
+        </h1>
+
+        <p class="tagline">One legend. Two sticks. <strong>Total control.</strong></p>
+
+        <div class="control-preview">
+          <div class="mini-stick mini-left"><span>L</span><i></i></div>
+          <span class="control-plus">+</span>
+          <div class="mini-stick mini-right"><span>R</span><i></i></div>
+          <div class="control-copy">
+            <b>MOVE EACH LEG</b>
+            <span>Push both sticks to run. Flick through the ball to kick.</span>
+          </div>
+        </div>
+
+        <div class="title-actions">
+          <button id="playBtn" class="btn btn-primary" type="button">
+            <span>PLAY</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.2v11.6L18.2 12z" fill="currentColor"/></svg>
+          </button>
+          <button id="howBtn" class="btn btn-ghost" type="button">HOW TO PLAY</button>
+        </div>
+
+        <div class="title-meta">
+          <span>75 SECONDS</span><i></i><span>SCORE GOLAZOS</span><i></i><span>BEAT THE DEFENDERS</span>
+        </div>
+      </div>
+
+      <div class="best-badge">
+        <span>PERSONAL BEST</span>
+        <strong id="titleBest">0000</strong>
+      </div>
+
+      <div class="title-footer">
+        <span class="key-hint"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> LEFT FOOT</span>
+        <span class="key-hint"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> RIGHT FOOT</span>
+        <span class="key-hint gamepad-hint" hidden>GAMEPAD READY</span>
+      </div>
+    </section>
+
+    <!-- ── How to play ──────────────────────────────────────────── -->
+    <section id="howScreen" class="screen how-screen" aria-labelledby="howTitle" hidden>
+      <div class="how-card" role="dialog" aria-modal="true">
+        <div class="how-head">
+          <div>
+            <span class="eyebrow-label">THE CONTROL SCHEME</span>
+            <h2 id="howTitle">TWO STICKS.<br><span>ONE GOAT.</span></h2>
+          </div>
+          <button id="closeHowBtn" class="icon-btn close-btn" type="button" aria-label="Close instructions">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.4 6.4 11.2 11.2M17.6 6.4 6.4 17.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <div class="how-grid">
+          <article class="how-step">
+            <div class="step-icon step-run" aria-hidden="true">
+              <span class="run-stick"><i></i></span>
+              <span class="run-stick"><i></i></span>
+            </div>
+            <span class="step-no">01</span>
+            <h3>RUN</h3>
+            <p>Push <b>both sticks the same way</b>. Messi's legs stride independently — keep them together to glide.</p>
+          </article>
+          <article class="how-step">
+            <div class="step-icon step-kick" aria-hidden="true">
+              <span class="kick-stick"><i></i></span>
+              <span class="kick-ball"></span>
+            </div>
+            <span class="step-no">02</span>
+            <h3>KICK</h3>
+            <p><b>Flick one stick</b> through the ball. Faster flick, harder strike. Alternate feet to dribble past defenders.</p>
+          </article>
+          <article class="how-step">
+            <div class="step-icon step-score" aria-hidden="true">
+              <span class="score-goal"></span>
+              <span class="score-ball"></span>
+            </div>
+            <span class="step-no">03</span>
+            <h3>SCORE</h3>
+            <p>Beat the keeper. Every goal is worth points and buys <b>+6 seconds</b>. Score again quickly for a combo.</p>
+          </article>
+        </div>
+
+        <div class="how-devices">
+          <div><span>TOUCH</span><b>Two floating thumbsticks</b></div>
+          <div><span>GAMEPAD</span><b>Left + right analog sticks</b></div>
+          <div><span>KEYBOARD</span><b>WASD + Arrow keys</b></div>
+        </div>
+
+        <button id="gotItBtn" class="btn btn-primary btn-wide" type="button">GOT IT</button>
+      </div>
+    </section>
+
+    <!-- ── Pause ────────────────────────────────────────────────── -->
+    <section id="pauseScreen" class="screen pause-screen" aria-labelledby="pauseTitle" hidden>
+      <div class="pause-card" role="dialog" aria-modal="true">
+        <span class="eyebrow-label">MATCH PAUSED</span>
+        <h2 id="pauseTitle">TAKE A BREATH.</h2>
+        <p>The defenders can wait.</p>
+        <button id="resumeBtn" class="btn btn-primary btn-wide" type="button">RESUME</button>
+        <button id="quitBtn" class="btn btn-ghost btn-wide" type="button">QUIT TO TITLE</button>
+      </div>
+    </section>
+
+    <!-- ── Full time ────────────────────────────────────────────── -->
+    <section id="finalScreen" class="screen final-screen" aria-labelledby="finalTitle" hidden>
+      <div class="final-card" role="dialog" aria-modal="true">
+        <span class="eyebrow-label">FULL TIME</span>
+        <h2 id="finalTitle">THE GOAT<br><span>DELIVERS.</span></h2>
+
+        <div class="final-score">
+          <span>FINAL SCORE</span>
+          <strong id="finalScore">0000</strong>
+          <em id="newBest" hidden>NEW PERSONAL BEST</em>
+        </div>
+
+        <div class="final-stats">
+          <div><span>GOALS</span><strong id="finalGoals">0</strong></div>
+          <div><span>BEST COMBO</span><strong id="finalCombo">×1</strong></div>
+          <div><span>DEFENDERS BEATEN</span><strong id="finalBeaten">0</strong></div>
+        </div>
+
+        <button id="againBtn" class="btn btn-primary btn-wide" type="button">PLAY AGAIN</button>
+        <button id="homeBtn" class="btn btn-ghost btn-wide" type="button">BACK TO TITLE</button>
+      </div>
+    </section>
+
+    <div id="rotateHint" class="rotate-hint" aria-hidden="true">
+      <span>BEST IN PORTRAIT</span>
+      <small>Rotate your phone for a taller pitch</small>
+    </div>
+
+    <noscript><div class="noscript">This game needs JavaScript enabled.</div></noscript>
+  </main>
+
+  <script src="game.js" defer></script>
+</body>
+</html>
